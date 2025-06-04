@@ -41,7 +41,7 @@ class HomeState extends ConsumerState<Home> {
       appBar: AppBar(
         title: Text(widget.appTitle),
         elevation: 4.0,
-        backgroundColor: theme.colorScheme.background,
+        backgroundColor: theme.colorScheme.surface,
         shadowColor: theme.shadowColor,
         actions: [
           ThemeButton(
