@@ -1,49 +1,63 @@
 import 'package:flutter/material.dart';
+import 'constants.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   // 1
   runApp(const Yummy());
 }
 
-class Yummy extends StatelessWidget {
-  // TODO: Setup default theme
-
-  // 2
+class Yummy extends StatefulWidget {
   const Yummy({super.key});
 
-  // TODO: Add changeTheme above here
+  @override
+  State<Yummy> createState() => _YummyState();
+}
+
+class _YummyState extends State<Yummy> {
+  ThemeMode themeMode = ThemeMode.light;
+
+  ColorSelection colorSelected = ColorSelection.pink;
+
+  void changeTheme(bool isLightMode) {
+    setState(() {
+      themeMode = isLightMode ? ThemeMode.light : ThemeMode.dark;
+    });
+  }
+
+  void changeColor(int value) {
+    setState(() {
+      colorSelected = ColorSelection.values[value];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     const appTitle = 'Yummy';
 
-    // TODO: Setup default theme
-
     //3
     return MaterialApp(
       title: appTitle,
-      //debugShowCheckedModeBanner: false, // Uncomment to remove Debug banner
+      debugShowCheckedModeBanner: false, // Uncomment to remove Debug banner
 
-      // TODO: Add theme
-
-      // TODO: Apply Home widget
+      theme: ThemeData(
+        colorSchemeSeed: colorSelected.color,
+        brightness: Brightness.light,
+        useMaterial3: true,
+      ),
+      themeMode: themeMode,
+      darkTheme: ThemeData(
+        colorSchemeSeed: colorSelected.color,
+        brightness: Brightness.dark,
+        useMaterial3: true,
+      ),
 
       // 4
-      home: Scaffold(
-        appBar: AppBar(
-          // TODO: Add action buttons
-          elevation: 4.0,
-          title: const Text(
-            appTitle,
-            style: TextStyle(fontSize: 24.0),
-          ),
-        ),
-        body: const Center(
-          child: Text(
-            'You Hungry?😋',
-            style: TextStyle(fontSize: 30.0),
-          ),
-        ),
+      home: HomeScreen(
+        changeTheme: changeTheme,
+        changeColor: changeColor,
+        colorSelected: colorSelected,
+        appTitle: appTitle,
       ),
     );
   }
