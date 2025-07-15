@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/restaurant.dart';
+import 'favorite_button.dart';
 
 class RestaurantLandscapeCard extends StatelessWidget {
   const RestaurantLandscapeCard({super.key, required this.restaurant});
@@ -17,15 +18,27 @@ class RestaurantLandscapeCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
-              child: AspectRatio(
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+                child: AspectRatio(
                   aspectRatio: 2,
                   child: Image.asset(
                     restaurant.imageUrl,
                     fit: BoxFit.cover,
-                  ))),
+                  ),
+                ),
+              ),
+              const Positioned(
+                top: 8,
+                right: 8,
+                child: FavoriteButton(),
+              ),
+            ],
+          ),
           ListTile(
             title: Text(
               restaurant.name,
