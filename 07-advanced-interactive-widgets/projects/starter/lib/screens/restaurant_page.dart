@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../components/restaurant_item.dart';
+import '../components/item_details.dart';
+import '../components/my_restaurant_item.dart';
 import '../models/cart_manager.dart';
 import '../models/order_manager.dart';
 import '../models/restaurant.dart';
+import 'checkout_page.dart';
 
 class RestaurantPage extends StatefulWidget {
   final Restaurant restaurant;
@@ -25,8 +27,9 @@ class _RestaurantPageState extends State<RestaurantPage> {
   static const double largeScreenPercentage = 0.9;
   static const double maxWidth = 1000;
   static const desktopThreshold = 700;
-  // TODO: Define Drawer Max Width
-  // TODO: Define Scaffold Key
+  static const drawerMaxWidth = 375.0;
+  static final GlobalKey<ScaffoldState> scaffoldKey =
+      GlobalKey<ScaffoldState>();
 
   double _calculateConstrainedWidth(double screenWidth) {
     return (screenWidth > desktopThreshold
@@ -36,7 +39,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
   int calculateColumnCount(double screenWidth) {
-    const desktopThreshold = 700;
     return screenWidth > desktopThreshold ? 2 : 1;
   }
 
@@ -121,14 +123,13 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
   }
 
-  // TODO: Replace _buildGridItem()
   Widget _buildGridItem(int index) {
     final item = widget.restaurant.items[index];
     return InkWell(
       onTap: () {
-        // Present Bottom Sheet in the future.
+        _showBottomSheet(item);
       },
-      child: RestaurantItem(item: item),
+      child: MyRestaurantItem(item: item),
     );
   }
 
@@ -151,7 +152,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
-        childAspectRatio: 3.5,
+        childAspectRatio: 2.5,
         crossAxisCount: columns,
       ),
       itemBuilder: (context, index) => _buildGridItem(index),
@@ -177,20 +178,64 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
   }
 
-  // TODO: Show Bottom Sheet
-  // TODO: Create Drawer
-  // TODO: Open Drawer
-  // TODO: Create Floating Action Button
+  void _showBottomSheet(Item item) {
+    showModalBottomSheet(
+      constraints: const BoxConstraints(maxWidth: 480),
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return ItemDetails(
+          item: item,
+          cartManager: widget.cartManager,
+          onQuantityUpdated: () {
+            setState(() {});
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildEndDrawer() {
+    return Drawer(
+      width: drawerMaxWidth,
+      child: CheckoutPage(
+        cartManager: widget.cartManager,
+        didUpdate: () {
+          setState(() {});
+        },
+        onSubmit: (order) {
+          widget.ordersManager.addOrder(order);
+          Navigator.popUntil(context, (route) => route.isFirst);
+        },
+      ),
+    );
+  }
+
+  void openDrawer() {
+    scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  Widget _buildFloatingActionButton(ColorScheme colorScheme) {
+    return FloatingActionButton.extended(
+      backgroundColor: colorScheme.secondary,
+      foregroundColor: colorScheme.onSecondary,
+      onPressed: openDrawer,
+      icon: const Icon(Icons.store_outlined),
+      label: Text('${widget.cartManager.items.length} items in cart'),
+      tooltip: 'Cart',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final constrainedWidth = _calculateConstrainedWidth(screenWidth);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      // TODO: Add Scaffold Key
-      // TODO: Apply Drawer
-      // TODO: Apply Floating Action Button
+      key: scaffoldKey,
+      endDrawer: _buildEndDrawer(),
+      floatingActionButton: _buildFloatingActionButton(colorScheme),
       body: Center(
         child: SizedBox(
           width: constrainedWidth,
