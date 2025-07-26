@@ -125,11 +125,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
             direction: DismissDirection.endToStart,
             background: Container(),
             secondaryBackground: const SizedBox(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(Icons.delete),
-                  ]),
+              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Icon(Icons.delete),
+              ]),
             ),
             onDismissed: (direction) {
               setState(() {
@@ -166,22 +164,22 @@ class _CheckoutPageState extends State<CheckoutPage> {
       onPressed: widget.cartManager.isEmpty
           ? null
           : () {
-        final selectedSegment = this.selectedSegment;
-        final selectedTime = this.selectedTime;
-        final selectedDate = this.selectedDate;
-        final name = _nameController.text;
-        final items = widget.cartManager.items;
+              final selectedSegment = this.selectedSegment;
+              final selectedTime = this.selectedTime;
+              final selectedDate = this.selectedDate;
+              final name = _nameController.text;
+              final items = widget.cartManager.items;
 
-        final order = Order(
-            selectedSegment: selectedSegment,
-            selectedTime: selectedTime,
-            selectedDate: selectedDate,
-            name: name,
-            items: items);
+              final order = Order(
+                  selectedSegment: selectedSegment,
+                  selectedTime: selectedTime,
+                  selectedDate: selectedDate,
+                  name: name,
+                  items: items);
 
-        widget.cartManager.resetCart();
-        widget.onSubmit(order);
-      },
+              widget.cartManager.resetCart();
+              widget.onSubmit(order);
+            },
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Text(

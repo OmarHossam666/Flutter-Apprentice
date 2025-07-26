@@ -16,7 +16,7 @@ class CustomScrollBehavior extends MaterialScrollBehavior {
   Set<PointerDeviceKind> get dragDevices => {
         PointerDeviceKind.touch,
         PointerDeviceKind.mouse,
-        PointerDeviceKind.trackpad
+        PointerDeviceKind.trackpad,
       };
 }
 
@@ -46,26 +46,29 @@ class _YummyState extends State<Yummy> {
     redirect: _appRedirect,
     routes: [
       GoRoute(
-        path: '/login',
-        builder: (context, state) =>
-          LoginPage(
-              onLogIn: (Credentials credentials) async {
-            _auth
-                .signIn(credentials.username, credentials.password)
-                .then((_) => context.go('/${YummyTab.home.value}'));
-          })),
+          path: '/login',
+          builder: (context, state) =>
+              LoginPage(onLogIn: (Credentials credentials) async {
+                final router = GoRouter.of(context);
+                _auth
+                    .signIn(credentials.username, credentials.password)
+                    .then((_) {
+                  if (mounted) {
+                    router.go('/${YummyTab.home.value}');
+                  }
+                });
+              })),
       GoRoute(
           path: '/:tab',
           builder: (context, state) {
             return Home(
-              auth: _auth,
-              cartManager: _cartManager,
-              ordersManager: _orderManager,
-              changeTheme: changeThemeMode,
-              changeColor: changeColor,
-              colorSelected: colorSelected,
-              tab: int.tryParse(
-                state.pathParameters['tab'] ?? '') ?? 0);
+                auth: _auth,
+                cartManager: _cartManager,
+                ordersManager: _orderManager,
+                changeTheme: changeThemeMode,
+                changeColor: changeColor,
+                colorSelected: colorSelected,
+                tab: int.tryParse(state.pathParameters['tab'] ?? '') ?? 0);
           },
           routes: [
             GoRoute(
