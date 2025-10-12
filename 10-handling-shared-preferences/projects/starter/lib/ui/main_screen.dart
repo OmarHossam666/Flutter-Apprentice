@@ -7,6 +7,7 @@ import 'theme/colors.dart';
 import 'recipes/recipe_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
+import '../providers.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class MainScreen extends ConsumerStatefulWidget {
 class _MainScreenState extends ConsumerState<MainScreen> {
   int _selectedIndex = 0;
   List<Widget> pageList = <Widget>[];
-  // TODO Add Index Key
+  static const String currentIndexKey = 'currentIndexKey';
 
   @override
   void initState() {
@@ -29,11 +30,21 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void saveCurrentIndex() async {
-    // TODO Save Current Index
+    final sharedPreferences = ref.read(sharedPreferencesProvider);
+    await sharedPreferences.setInt(currentIndexKey, _selectedIndex);
   }
 
   void getCurrentIndex() async {
-    // TODO Get Current Index
+    final sharedPreferences = ref.read(sharedPreferencesProvider);
+
+    if (sharedPreferences.containsKey(currentIndexKey)) {
+      setState(() {
+        final currentIndex = sharedPreferences.getInt(currentIndexKey);
+        if (currentIndex != null) {
+          _selectedIndex = currentIndex;
+        }
+      });
+    }
   }
 
   void _onItemTapped(int index) {

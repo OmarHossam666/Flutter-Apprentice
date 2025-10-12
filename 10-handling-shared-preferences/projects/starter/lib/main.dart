@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumberdash/lumberdash.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'providers.dart';
 import 'ui/main_screen.dart';
 import 'ui/theme/theme.dart';
 import 'utils.dart';
@@ -18,8 +20,10 @@ Future<void> main() async {
     await DesktopWindow.setWindowSize(const Size(600, 600));
     await DesktopWindow.setMinWindowSize(const Size(260, 600));
   }
-  // TODO Add Shared Preferences
-  runApp(const ProviderScope(child: MyApp()));
+  final sharedPreferences = await SharedPreferences.getInstance();
+  runApp(ProviderScope(overrides: [
+    sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+  ], child: const MyApp()));
 }
 
 void _setupLogging() {
@@ -28,7 +32,7 @@ void _setupLogging() {
   ]);
   system_log.Logger.root.level = system_log.Level.ALL;
   system_log.Logger.root.onRecord.listen((rec) {
-      debugPrint('${rec.level.name}: ${rec.time}: ${rec.message}');
+    debugPrint('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 }
 

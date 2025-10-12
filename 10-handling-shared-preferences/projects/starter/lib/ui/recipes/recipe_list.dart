@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../network/service_interface.dart';
 import '../widgets/common.dart';
 import '../../data/models/models.dart';
@@ -14,8 +15,7 @@ import '../recipe_card.dart';
 import '../recipes/recipe_details.dart';
 import '../theme/colors.dart';
 import '../widgets/custom_dropdown.dart';
-// TODO: Add imports
-
+import '../../providers.dart';
 
 enum ListType { all, bookmarks }
 
@@ -27,8 +27,7 @@ class RecipeList extends ConsumerStatefulWidget {
 }
 
 class _RecipeListState extends ConsumerState<RecipeList> {
-  // TODO Add Search Index Key
-
+  static const String searchPreferenceKey = 'searchPreferenceKey';
   late TextEditingController searchTextController;
   final ScrollController _scrollController = ScrollController();
   List<Recipe> currentSearchList = [];
@@ -61,7 +60,7 @@ class _RecipeListState extends ConsumerState<RecipeList> {
               !loading &&
               !inErrorState) {
             setState(
-                  () {
+              () {
                 loading = true;
                 newDataRequired = true;
                 currentStartPosition = currentEndPosition;
@@ -83,11 +82,23 @@ class _RecipeListState extends ConsumerState<RecipeList> {
   }
 
   void savePreviousSearches() async {
-    // TODO Save Current Index
+    final sharedPreferences = ref.read(sharedPreferencesProvider);
+
+    await sharedPreferences.setStringList(
+        searchPreferenceKey, previousSearches);
   }
 
   void getPreviousSearches() async {
-    // TODO Get Current Index
+    final sharedPreferences = ref.read(sharedPreferencesProvider);
+
+    if (sharedPreferences.containsKey(searchPreferenceKey)) {
+      final searches = sharedPreferences.getStringList(searchPreferenceKey);
+      if (searches != null) {
+        previousSearches = searches;
+      } else {
+        previousSearches = <String>[];
+      }
+    }
   }
 
   @override
@@ -342,13 +353,9 @@ class _RecipeListState extends ConsumerState<RecipeList> {
         searchTextController.text.trim(), currentStartPosition, pageCount);
     return currentResponse!;
 */
-    const apiQueryResults = QueryResult(
-        offset: 0,
-        number: 0,
-        totalResults: 0,
-        recipes: <Recipe>[]);
+    const apiQueryResults =
+        QueryResult(offset: 0, number: 0, totalResults: 0, recipes: <Recipe>[]);
     return Success(apiQueryResults);
-
   }
 
   Widget _buildRecipeList(
