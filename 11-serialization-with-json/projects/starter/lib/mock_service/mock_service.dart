@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:math';
+
+import 'package:flutter/services.dart';
 
 import '../data/models/recipe.dart';
 import '../network/model_response.dart';
 import '../network/query_result.dart';
 import '../network/service_interface.dart';
+import '../network/spoonacular_model.dart';
 
 class MockService implements ServiceInterface {
   late QueryResult _currentRecipes1;
@@ -18,7 +22,7 @@ class MockService implements ServiceInterface {
   }
 
   Future loadRecipes() async {
-    /*
+    
     // Recipe List 1
     var jsonString = await rootBundle.loadString('assets/recipes1.json');
     var spoonacularResults =
@@ -48,7 +52,6 @@ class MockService implements ServiceInterface {
         SpoonacularRecipe.fromJson(jsonDecode(jsonString));
     spoonacularRecipe.id = recipes[0].id!;
     recipeDetails = spoonacularRecipeToRecipe(spoonacularRecipe);
-     */
   }
 
   @override

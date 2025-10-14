@@ -1,7 +1,49 @@
+import 'package:json_annotation/json_annotation.dart';
 
-// TODO: Add SpoonacularResults class
+import '../data/models/ingredient.dart';
+import '../data/models/recipe.dart';
 
-/*
+part 'spoonacular_model.g.dart';
+
+@JsonSerializable()
+class SpoonacularResults {
+  SpoonacularResults({
+    required this.results,
+    required this.offset,
+    required this.totalResults,
+    required this.number,
+  });
+
+  final List<SpoonacularResult> results;
+  final int offset;
+  final int totalResults;
+  final int number;
+
+  factory SpoonacularResults.fromJson(Map<String, dynamic> json) =>
+      _$SpoonacularResultsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SpoonacularResultsToJson(this);
+}
+
+@JsonSerializable()
+class SpoonacularResult {
+  SpoonacularResult({
+    required this.id,
+    required this.title,
+    required this.image,
+    required this.imageType,
+  });
+
+  final int id;
+  final String title;
+  final String image;
+  final String imageType;
+
+  factory SpoonacularResult.fromJson(Map<String, dynamic> json) =>
+      _$SpoonacularResultFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SpoonacularResultToJson(this);
+}
 
 @JsonSerializable()
 class SpoonacularRecipe {
@@ -38,7 +80,6 @@ class SpoonacularRecipe {
       _$SpoonacularRecipeFromJson(json);
 
   Map<String, dynamic> toJson() => _$SpoonacularRecipeToJson(this);
-
 }
 
 @JsonSerializable()
@@ -68,9 +109,7 @@ class ExtendedIngredient {
       _$ExtendedIngredientFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExtendedIngredientToJson(this);
-
 }
-
 
 /// Methods to convert network recipes into local recipes
 List<Recipe> spoonacularResultsToRecipe(SpoonacularResults result) {
@@ -109,4 +148,3 @@ Recipe spoonacularRecipeToRecipe(SpoonacularRecipe spoonacularRecipe) {
     ingredients: ingredients,
   );
 }
-*/

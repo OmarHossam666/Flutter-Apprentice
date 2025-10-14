@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lumberdash/lumberdash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'mock_service/mock_service.dart';
 import 'providers.dart';
 import 'ui/main_screen.dart';
 import 'ui/theme/theme.dart';
@@ -21,10 +22,10 @@ Future<void> main() async {
     await DesktopWindow.setMinWindowSize(const Size(260, 600));
   }
   final sharedPrefs = await SharedPreferences.getInstance();
-  // TODO: Create Mock service
+  final mockService = await MockService.create();
   runApp(ProviderScope(overrides: [
     sharedPrefProvider.overrideWithValue(sharedPrefs),
-    // TODO: Inject mock service
+    serviceProvider.overrideWithValue(mockService),
   ], child: const MyApp()));
 }
 
@@ -34,7 +35,7 @@ void _setupLogging() {
   ]);
   system_log.Logger.root.level = system_log.Level.ALL;
   system_log.Logger.root.onRecord.listen((rec) {
-      debugPrint('${rec.level.name}: ${rec.time}: ${rec.message}');
+    debugPrint('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 }
 

@@ -280,13 +280,12 @@ class _RecipeListState extends ConsumerState<RecipeList> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-       
             return SliverFillRemaining(
               child: Center(
                 child: Text(
                   snapshot.error.toString(),
                   textAlign: TextAlign.center,
-                  textScaleFactor: 1.3,
+                  textScaler: const TextScaler.linear(1.3),
                 ),
               ),
             );
@@ -349,12 +348,21 @@ class _RecipeListState extends ConsumerState<RecipeList> {
     }
     newDataRequired = false;
 
-    // TODO: Load Recipes
-/*
+    // final jsonString = await rootBundle.loadString('assets/recipes1.json');
+    // final spoonacularResults =
+    //     SpoonacularResults.fromJson(jsonDecode(jsonString));
+    // final recipes = spoonacularResultsToRecipe(spoonacularResults);
+    // final apiQueryResults = QueryResult(
+    //     offset: spoonacularResults.offset,
+    //     number: spoonacularResults.number,
+    //     totalResults: spoonacularResults.totalResults,
+    //     recipes: recipes);
+
+    // currentResponse = Future.value(Success(apiQueryResults));
+
     final recipeService = ref.watch(serviceProvider);
     currentResponse = recipeService.queryRecipes(
         searchTextController.text.trim(), currentStartPosition, pageCount);
-*/
 
     return currentResponse ?? Future.error('No data found');
   }
